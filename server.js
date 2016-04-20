@@ -11,3 +11,4 @@ router.get('/', function *(next) {
 app.use(router.routes());
 app.use(serveStatic(__dirname + '/dist'));
 app.listen(3000);
+console.log('Server listening at 3000');

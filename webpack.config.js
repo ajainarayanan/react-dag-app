@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
   context: __dirname + '/src',
@@ -15,6 +16,14 @@ module.exports = {
       }
     ],
     loaders: [
+      {
+        test: /\.css/,
+        loader: 'style-loader!css-loader'
+      },
+      {
+        test : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader : 'file-loader'
+      },
       {
         test: /\.js$/,
         loader: 'babel',
@@ -33,5 +42,8 @@ module.exports = {
     filename: './app.js',
     path: __dirname + '/dist'
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  plugins: [
+    new LiveReloadPlugin()
+  ]
 };
