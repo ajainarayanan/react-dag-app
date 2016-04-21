@@ -10,8 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.1",
+    "node-uuid": "^1.4.7",
     "react": "^15.0.1",
-    "react-dom": "^15.0.1"
+    "react-dom": "^15.0.1",
+    "redux": "^3.5.1"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
