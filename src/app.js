@@ -1,39 +1,46 @@
 import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import data from './data';
+import {store} from './app-store';
+
 require('bootstrap/dist/css/bootstrap.min.css');
 
 class DAG extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      nodes: [],
-      connections: []
-    };
-  }
-  componentDidMount() {
-    this.setState({
-      nodes: this.props.nodes,
-      connections: this.props.connections
+    this.state = store.getState();
+    store.subscribe( () => {
+      this.setState(store.getState());
     });
   }
-  onTextChange(event) {
-    this.setState({
-      nodes: JSON.parse(event.target.value),
-      connections: this.state.connections
+  componentDidMount() {
+    this.setState(store.getState());
+  }
+  addNode(type) {
+    store.dispatch({
+      type: 'ADD-NODE',
+      node: {
+        type: type
+      }
     });
   }
   render() {
     return (
       <div>
         <h4> Generic DAG </h4>
-        <textarea className="form-control"
-                  defaultValue={JSON.stringify(this.state.nodes)}
-                  onChange={this.onTextChange.bind(this)}
-                  >
-        </textarea>
-        <div>
-          {JSON.stringify(this.state.nodes)}
+        <div className="container">
+          <div className="row">
+            <div className="col-xs-2">
+              <div className="btn-group-vertical btn-block">
+                <button className="btn btn-default" onClick={this.addNode.bind(this, 'source')}> Add Source </button>
+                <button className="btn btn-default" onClick={this.addNode.bind(this, 'transform')}> Add Transform </button>
+                <button className="btn btn-default" onClick={this.addNode.bind(this, 'sink')}> Add Sink </button>
+              </div>
+            </div>
+            <div className="col-xs-10">
+              <pre>State: {JSON.stringify(this.state, null, 2)}</pre>
+            </div>
+          </div>
         </div>
       </div>
     );
