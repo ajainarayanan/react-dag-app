@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import data from './data';
 import {store} from './app-store';
 
-require('bootstrap/dist/css/bootstrap.min.css');
-
 class DAG extends Component {
   constructor(props) {
     super(props);
@@ -20,13 +18,17 @@ class DAG extends Component {
     store.dispatch({
       type: 'ADD-NODE',
       node: {
-        type: type
+        type: type,
+        data: {
+          type: type,
+          name: 'Something'
+        }
       }
     });
   }
   render() {
     return (
-      <div>
+      <my-dag>
         <h4> Generic DAG </h4>
         <div className="container">
           <div className="row">
@@ -38,18 +40,23 @@ class DAG extends Component {
               </div>
             </div>
             <div className="col-xs-10">
-              <pre>State: {JSON.stringify(this.state, null, 2)}</pre>
+              <div className="dag-container">
+                {
+                  this.state.nodes.map(function(node) {
+                    return <div className="dag-node"> {node.name}</div>;
+                  })
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </my-dag>
     );
   }
 }
 let nodes = data.nodes;
 let connections = data.connections;
-
 ReactDOM.render(
-  <DAG nodes={nodes} connections={connections}></DAG>,
+  <DAG my-dag nodes={nodes} connections={connections}/>,
   document.getElementById('app-dag')
 );

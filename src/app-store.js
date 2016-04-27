@@ -8,7 +8,8 @@ let nodes = (state = [], action = {}) => {
         ...state,
         {
           id: uuid.v4(),
-          type: action.node.type
+          name: action.node.data.name,
+          type: action.node.data.type
         }
       ];
     default:
