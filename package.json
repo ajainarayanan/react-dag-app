@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "extract-text-webpack-plugin": "^1.0.1",
     "font-awesome": "^4.6.1",
+    "jsplumb": "^2.0.7",
     "node-uuid": "^1.4.7",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
@@ -27,6 +29,8 @@
     "koa": "^1.2.0",
     "koa-router": "^5.4.0",
     "koa-static": "^2.0.0",
+    "less": "^2.6.1",
+    "less-loader": "^2.2.3",
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
