@@ -2,30 +2,27 @@ var webpack = require('webpack');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-var fontFiles = [
-  __dirname + '/node_modules/font-awesome/fonts/fontawesome-webfont.eot',
-  __dirname + '/node_modules/font-awesome/fonts/fontawesome-webfont.svg',
-  __dirname + '/node_modules/font-awesome/fonts/fontawesome-webfont.ttf',
-  __dirname + '/node_modules/font-awesome/fonts/fontawesome-webfont.woff',
-  __dirname + '/node_modules/font-awesome/fonts/fontawesome-webfont.woff2',
-  __dirname + '/node_modules/font-awesome/fonts/FontAwesome.otf'
-];
+var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   context: __dirname + '/src',
   entry: {
-    app: './app.js',
-    html: './index.html',
-    'app-styles': './styles/app-styles.less',
-    'lib-styles': './styles/lib-styles.less',
-    font: fontFiles,
+    'react-dag': './app-bootstrap.js',
+    'vendor': ['react', 'react-dom', 'redux', 'lodash'],
+    'html': './index.html'
   },
   module: {
     loaders: [
       {
-        test: /\.css$/,
-        loader: 'file?name=styles/[name].[ext]'
+        test: require.resolve('jsPlumb'),
+        loaders: [
+          'imports?this=>window',
+          'script'
+        ]
+      },
+      {
+        test: /\.html$/,
+        loader: 'file?name=[name].[ext]'
       },
       {
         test : /\.(ttf|eot|svg|otf|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -33,19 +30,16 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+        loader: 'style-loader!css-loader!less-loader'
       },
       {
         test: /\.js$/,
         loader: 'babel',
         exclude: /node_modules/,
         query: {
+          plugins: ['lodash'],
           presets: ['react', 'es2015']
         }
-      },
-      {
-        test: /\.html$/,
-        loader: 'file?name=[name].[ext]'
       }
     ]
   },
@@ -54,7 +48,9 @@ module.exports = {
     path: __dirname + '/dist'
   },
   plugins: [
-    new LiveReloadPlugin(),
-    new ExtractTextPlugin("styles/[name].css")
+    new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
+    new LodashModuleReplacementPlugin,
+    new webpack.optimize.OccurenceOrderPlugin,
+    new LiveReloadPlugin()
   ]
 };

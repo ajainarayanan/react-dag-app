@@ -1,4 +1,4 @@
-import {combineReducers, createStore} from 'Redux';
+import {combineReducers, createStore} from 'redux';
 import uuid from 'node-uuid';
 
 let nodes = (state = [], action = {}) => {

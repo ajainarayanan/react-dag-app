@@ -3,12 +3,18 @@ import ReactDOM from 'react-dom';
 import data from './data';
 import {store} from './app-store';
 
+require('jsPlumb');
+console.log('asdasd', jsPlumb);
+
 class DAG extends Component {
   constructor(props) {
     super(props);
     this.state = store.getState();
     store.subscribe( () => {
       this.setState(store.getState());
+    });
+    jsPlumb.ready(function() {
+      console.log('Finally jsplumb is ready');
     });
   }
   componentDidMount() {
