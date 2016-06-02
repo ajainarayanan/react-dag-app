@@ -2,20 +2,78 @@ import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import data from './data';
 import {store} from './app-store';
-
+import {getSettings, getIcon, getGraphLayout} from './dag-settings';
 require('jsPlumb');
-console.log('asdasd', jsPlumb);
+var classnames = require('classname');
 
 class DAG extends Component {
   constructor(props) {
     super(props);
     this.state = store.getState();
+    this.endpoints = [];
+    this.settings = getSettings();
     store.subscribe( () => {
       this.setState(store.getState());
+      setTimeout(() => {
+        this.addEndpoints();
+        this.makeNodesDraggable();
+      });
+      this.makeConnections();
     });
-    jsPlumb.ready(function() {
-      console.log('Finally jsplumb is ready');
+    jsPlumb.ready(() => {
+      console.info('jsPlumb is ready to render');
+      let dagSettings = this.settings.default;
+      jsPlumb.setContainer('dag-container');
+      this.instance = jsPlumb.getInstance(dagSettings);
+      this.addEndpoints();
+      this.makeNodesDraggable();
+      this.makeConnections();
     });
+  }
+  makeNodesDraggable() {
+    let nodes = document.querySelectorAll('#dag-container .box');
+    this.instance.draggable(nodes, {
+      start: () => { console.log('Starting to drag')},
+      stop: (dragEndEvent) => {
+        console.log('Stopped drag');
+        store.dispatch({
+          type: 'UPDATE_NODE',
+          payload: {
+            nodeId: dragEndEvent.el.id,
+            style: {
+              top: dragEndEvent.el.style.top,
+              left: dragEndEvent.el.style.left
+            }
+          }
+        });
+        this.instance.repaintEverything();
+      }
+    });
+  }
+  makeConnections() {
+
+  }
+  addEndpoints() {
+    store.getState()
+      .nodes
+      .forEach(node => {
+        if (this.endpoints.indexOf(node.id) !== -1) {
+          return;
+        }
+        this.endpoints.push(node.id);
+        let type = node.type;
+        switch(type) {
+          case 'source':
+            this.instance.addEndpoint(node.id, this.settings.source, {uuid: node.id});
+            return;
+          case 'sink':
+            this.instance.addEndpoint(node.id, this.settings.sink, {uuid: node.id});
+            return;
+          default:
+            this.instance.addEndpoint(node.id, this.settings.transformSource, {uuid: `Left${node.id}`});
+            this.instance.addEndpoint(node.id, this.settings.transformSink, {uuid: `Right${node.id}`});
+        }
+      });
   }
   componentDidMount() {
     this.setState(store.getState());
@@ -46,7 +104,7 @@ class DAG extends Component {
               </div>
             </div>
             <div className="col-xs-10">
-              <div className="dag-container">
+              <div id="dag-container">
                 {
                   this.state.nodes.map(function(node) {
                     return (
@@ -60,6 +118,9 @@ class DAG extends Component {
                 }
               </div>
             </div>
+            <pre>
+              {JSON.stringify(this.state.nodes, null, 4)}
+            </pre>
           </div>
         </div>
       </my-dag>

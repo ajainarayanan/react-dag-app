@@ -12,6 +12,14 @@ let nodes = (state = [], action = {}) => {
           type: action.node.data.type
         }
       ];
+    case 'UPDATE_NODE':
+      return state.map(node => {
+        if (node.id === action.payload.nodeId) {
+          node.style = action.payload.style;
+          return node;
+        }
+        return node;
+      });
     default:
       return state;
   }
