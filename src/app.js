@@ -49,7 +49,13 @@ class DAG extends Component {
               <div className="dag-container">
                 {
                   this.state.nodes.map(function(node) {
-                    return <div className="dag-node"> {node.name}</div>;
+                    return (
+                        <div className="box text-center" id={node.id} key={node.id}>
+                          <div className={classnames({'dag-node': true, [node.type]: true})}
+                              style={node.style}></div>
+                            <div className="label">{node.name}</div>
+                        </div>
+                      );
                   })
                 }
               </div>

@@ -8,7 +8,7 @@ module.exports = {
   context: __dirname + '/src',
   entry: {
     'react-dag': './app-bootstrap.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash'],
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname'],
     'html': './index.html'
   },
   module: {
