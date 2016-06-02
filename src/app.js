@@ -18,13 +18,14 @@ class DAG extends Component {
         this.addEndpoints();
         this.makeNodesDraggable();
       });
-      this.makeConnections();
     });
     jsPlumb.ready(() => {
-      console.info('jsPlumb is ready to render');
       let dagSettings = this.settings.default;
       jsPlumb.setContainer('dag-container');
       this.instance = jsPlumb.getInstance(dagSettings);
+      this.instance.bind('connection', this.makeConnections.bind(this));
+      this.instance.bind('connectionDetached', this.makeConnections.bind(this));
+
       this.addEndpoints();
       this.makeNodesDraggable();
       this.makeConnections();
@@ -35,7 +36,6 @@ class DAG extends Component {
     this.instance.draggable(nodes, {
       start: () => { console.log('Starting to drag')},
       stop: (dragEndEvent) => {
-        console.log('Stopped drag');
         store.dispatch({
           type: 'UPDATE_NODE',
           payload: {
@@ -51,7 +51,20 @@ class DAG extends Component {
     });
   }
   makeConnections() {
-
+    let connections = this.instance
+      .getConnections()
+      .map(conn => {
+        return {
+          from: conn.sourceId,
+          to: conn.targetId
+        };
+      });
+      store.dispatch({
+        type: 'SET-CONNECTIONS',
+        payload: {
+          connections
+        }
+      });
   }
   addEndpoints() {
     store.getState()
@@ -85,7 +98,7 @@ class DAG extends Component {
         type: type,
         data: {
           type: type,
-          name: 'Something'
+          name: type + Date.now().toString().slice(8)
         }
       }
     });
@@ -118,8 +131,14 @@ class DAG extends Component {
                 }
               </div>
             </div>
+          </div>
+          <br/>
+          <div className="row">
             <pre>
               {JSON.stringify(this.state.nodes, null, 4)}
+            </pre>
+            <pre>
+              {JSON.stringify(this.state.connections, null, 4)}
             </pre>
           </div>
         </div>

@@ -34,6 +34,8 @@ let connections = (state = [], action = {}) => {
           to: action.connection.to
         }
       ];
+    case 'SET-CONNECTIONS':
+      return [...action.payload.connections];
     default:
       return state;
   }

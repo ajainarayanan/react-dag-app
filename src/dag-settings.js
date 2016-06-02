@@ -16,11 +16,7 @@ var connectorStyle = {
 };
 var connectorOverlays = {
   connectorOverlays: [
-    [ 'Arrow', { location: 1, length: 12, width: 12, height: 10, foldback: 1 } ],
-    [ 'Custom', {
-      location: 0.5,
-      id: 'label'
-    }]
+    [ 'Arrow', { location: 1, length: 12, width: 12, height: 10, foldback: 1 } ]
   ]
 };
 var disabledConnectorOverlays = {
