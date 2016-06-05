@@ -1,24 +1,32 @@
 import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import data from './data';
-import {store} from './app-store';
+import {configureStore} from './app-store';
 import {getSettings, getIcon, getGraphLayout} from './dag-settings';
 require('jsPlumb');
 var classnames = require('classname');
+import createLogger from 'redux-logger';
+let loggerMiddleware = createLogger();
 
 class DAG extends Component {
   constructor(props) {
     super(props);
-    this.state = store.getState();
+    this.store = configureStore(props.data, [loggerMiddleware]);
+    this.state = this.store.getState();
     this.endpoints = [];
     this.settings = getSettings();
-    store.subscribe( () => {
-      this.setState(store.getState());
-      setTimeout(() => {
-        this.addEndpoints();
-        this.makeNodesDraggable();
-      });
+
+    const renderGraph = () => {
+      this.addEndpoints();
+      this.makeNodesDraggable();
+      this.renderConnections();
+    };
+
+    this.store.subscribe( () => {
+      this.setState(this.store.getState());
+      setTimeout(renderGraph.bind(this));
     });
+
     jsPlumb.ready(() => {
       let dagSettings = this.settings.default;
       jsPlumb.setContainer('dag-container');
@@ -26,9 +34,9 @@ class DAG extends Component {
       this.instance.bind('connection', this.makeConnections.bind(this));
       this.instance.bind('connectionDetached', this.makeConnections.bind(this));
 
-      this.addEndpoints();
-      this.makeNodesDraggable();
-      this.makeConnections();
+      if (Object.keys(props.data).length) {
+        renderGraph.call(this);
+      }
     });
   }
   makeNodesDraggable() {
@@ -36,7 +44,7 @@ class DAG extends Component {
     this.instance.draggable(nodes, {
       start: () => { console.log('Starting to drag')},
       stop: (dragEndEvent) => {
-        store.dispatch({
+        this.store.dispatch({
           type: 'UPDATE_NODE',
           payload: {
             nodeId: dragEndEvent.el.id,
@@ -50,7 +58,8 @@ class DAG extends Component {
       }
     });
   }
-  makeConnections() {
+  makeConnections(info, originalEvent) {
+    if (!originalEvent) { return; }
     let connections = this.instance
       .getConnections()
       .map(conn => {
@@ -59,15 +68,31 @@ class DAG extends Component {
           to: conn.targetId
         };
       });
-      store.dispatch({
+      this.store.dispatch({
         type: 'SET-CONNECTIONS',
         payload: {
           connections
         }
       });
   }
+  renderConnections() {
+    let {nodes, connections} = this.store.getState();
+    connections
+      .forEach( connection => {
+        var sourceNode = nodes.some( node => node.name === connection.from);
+        var targetNode = nodes.some( node => node.name === connection.to);
+        var sourceId = sourceNode.type === 'transform' ? 'Left' + connection.from : connection.from;
+        var targetId = targetNode.type === 'transform' ? 'Right' + connection.to : connection.to;
+        var connObj = {
+          uuids: [sourceId, targetId],
+          detachable: false
+        };
+        this.instance.connect(connObj);
+      });
+  }
   addEndpoints() {
-    store.getState()
+    console.log('Adding endpoint');
+    this.store.getState()
       .nodes
       .forEach(node => {
         if (this.endpoints.indexOf(node.id) !== -1) {
@@ -89,10 +114,10 @@ class DAG extends Component {
       });
   }
   componentDidMount() {
-    this.setState(store.getState());
+    this.setState(this.store.getState());
   }
   addNode(type) {
-    store.dispatch({
+    this.store.dispatch({
       type: 'ADD-NODE',
       node: {
         type: type,
@@ -146,9 +171,27 @@ class DAG extends Component {
     );
   }
 }
-let nodes = data.nodes;
-let connections = data.connections;
+let predefinedState = {
+  nodes: [
+    {
+      id: '1',
+      name: 'Source Node',
+      type: 'source'
+    },
+    {
+      id: '2',
+      name: 'Sink Node',
+      type: 'sink'
+    },
+  ],
+  connections: [
+    {
+      from: '1',
+      to: '2'
+    }
+  ]
+}
 ReactDOM.render(
-  <DAG my-dag nodes={nodes} connections={connections}/>,
+  <DAG data={predefinedState}/>,
   document.getElementById('app-dag')
 );

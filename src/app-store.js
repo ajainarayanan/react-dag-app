@@ -1,4 +1,4 @@
-import {combineReducers, createStore} from 'redux';
+import {combineReducers, createStore, applyMiddleware} from 'redux';
 import uuid from 'node-uuid';
 
 let nodes = (state = [], action = {}) => {
@@ -41,9 +41,16 @@ let connections = (state = [], action = {}) => {
   }
 };
 
-let combinedReducer = combineReducers({
+let combinedReducers = combineReducers({
   nodes,
   connections
 });
-let store = createStore(combinedReducer)
-export {store};
+
+export function configureStore(data, middlewares = []) {
+  let store = createStore(
+    combinedReducers,
+    data,
+    applyMiddleware.apply(null, middlewares)
+  );
+  return store;
+};
