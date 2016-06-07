@@ -21,6 +21,13 @@ module.exports = {
         ]
       },
       {
+        test: /node_module\/dagre\/dist\/dagre.core.js/,
+        loaders: [
+          'imports?this=>window',
+          'script'
+        ]
+      },
+      {
         test: /\.html$/,
         loader: 'file?name=[name].[ext]'
       },
