@@ -41,14 +41,20 @@ let connections = (state = [], action = {}) => {
   }
 };
 
-let combinedReducers = combineReducers({
-  nodes,
-  connections
-});
+let combinedReducers = (reducersMap) => {
+  let nodesReducers = [nodes].concat(reducersMap['nodes']);
+  return combineReducers({
+    nodes: (state, action) => {
+      return nodesReducers
+        .reduce((prev, curr) => curr.bind(null, prev(state, action), action), nodesReducers[0])();
+    },
+    connections
+  });
+};
 
-export function configureStore(data, middlewares = []) {
+export function configureStore(data, reducersMap, middlewares = []) {
   let store = createStore(
-    combinedReducers,
+    combinedReducers(reducersMap),
     data,
     applyMiddleware.apply(null, middlewares)
   );

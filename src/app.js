@@ -2,16 +2,26 @@ import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import data from './data';
 import {configureStore} from './app-store';
-import {getSettings, getIcon, getGraphLayout} from './dag-settings';
+import {getSettings, getIcon} from './dag-settings';
+import {graphLayout} from './reducers/layout-reducer';
+
 require('jsPlumb');
+var dagre = require('dagre');
 var classnames = require('classname');
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 
+
 class DAG extends Component {
   constructor(props) {
     super(props);
-    this.store = configureStore(props.data, [loggerMiddleware]);
+    this.store = configureStore(
+      props.data,
+      {
+        nodes: [graphLayout]
+      },
+      [loggerMiddleware]
+    );
     this.state = this.store.getState();
     this.endpoints = [];
     this.settings = getSettings();
@@ -91,7 +101,6 @@ class DAG extends Component {
       });
   }
   addEndpoints() {
-    console.log('Adding endpoint');
     this.store.getState()
       .nodes
       .forEach(node => {
@@ -128,6 +137,14 @@ class DAG extends Component {
       }
     });
   }
+  cleanUpGraph() {
+    let {nodes, connections} = this.store.getState();
+    this.store.dispatch({
+      type: 'CLEANUP-GRAPH',
+      payload: {nodes, connections}
+    });
+    setTimeout(this.instance.repaintEverything.bind(this));
+  }
   render() {
     return (
       <my-dag>
@@ -139,6 +156,8 @@ class DAG extends Component {
                 <button className="btn btn-default" onClick={this.addNode.bind(this, 'source')}> Add Source </button>
                 <button className="btn btn-default" onClick={this.addNode.bind(this, 'transform')}> Add Transform </button>
                 <button className="btn btn-default" onClick={this.addNode.bind(this, 'sink')}> Add Sink </button>
+                <button className="btn btn-default" onClick={this.cleanUpGraph.bind(this)}>
+                Cleanup Graph </button>
               </div>
             </div>
             <div className="col-xs-10">
@@ -146,9 +165,8 @@ class DAG extends Component {
                 {
                   this.state.nodes.map(function(node) {
                     return (
-                        <div className="box text-center" id={node.id} key={node.id}>
-                          <div className={classnames({'dag-node': true, [node.type]: true})}
-                              style={node.style}></div>
+                        <div className="box text-center" id={node.id} key={node.id} style={node.style}>
+                          <div className={classnames({'dag-node': true, [node.type]: true})}></div>
                             <div className="label">{node.name}</div>
                         </div>
                       );
