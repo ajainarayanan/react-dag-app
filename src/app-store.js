@@ -1,5 +1,6 @@
 import {combineReducers, createStore, applyMiddleware} from 'redux';
 import uuid from 'node-uuid';
+import {graph} from './reducers/layout-reducer';
 
 let nodes = (state = [], action = {}) => {
   switch(action.type) {
@@ -46,9 +47,10 @@ let combinedReducers = (reducersMap) => {
   return combineReducers({
     nodes: (state, action) => {
       return nodesReducers
-        .reduce((prev, curr) => curr.bind(null, prev(state, action), action), nodesReducers[0])();
+        .reduce((prev, curr) => curr.bind(null, prev(state, action), action))();
     },
-    connections
+    connections,
+    graph
   });
 };
 

@@ -30,6 +30,7 @@ class DAG extends Component {
       this.addEndpoints();
       this.makeNodesDraggable();
       this.renderConnections();
+      this.renderCleanedUpGraph();
     };
 
     this.store.subscribe( () => {
@@ -48,6 +49,11 @@ class DAG extends Component {
         renderGraph.call(this);
       }
     });
+  }
+  renderCleanedUpGraph() {
+    let scale = this.store.getState().graph.scale;
+    this.instance.setZoom(scale);
+    this.render();
   }
   makeNodesDraggable() {
     let nodes = document.querySelectorAll('#dag-container .box');
@@ -72,12 +78,11 @@ class DAG extends Component {
     if (!originalEvent) { return; }
     let connections = this.instance
       .getConnections()
-      .map(conn => {
-        return {
+      .map(conn => ({
           from: conn.sourceId,
           to: conn.targetId
-        };
-      });
+        })
+      );
       this.store.dispatch({
         type: 'SET-CONNECTIONS',
         payload: {
@@ -86,16 +91,24 @@ class DAG extends Component {
       });
   }
   renderConnections() {
+    let connectionsFromInstance = this.instance
+      .getConnections()
+      .map( conn => ({
+          from: conn.sourceId,
+          to: conn.targetId
+        })
+      );
     let {nodes, connections} = this.store.getState();
+    if (connections.length === connectionsFromInstance.length) { return; }
     connections
       .forEach( connection => {
-        var sourceNode = nodes.some( node => node.name === connection.from);
-        var targetNode = nodes.some( node => node.name === connection.to);
+        var sourceNode = nodes.find( node => node.id === connection.from);
+        var targetNode = nodes.find( node => node.id === connection.to);
         var sourceId = sourceNode.type === 'transform' ? 'Left' + connection.from : connection.from;
         var targetId = targetNode.type === 'transform' ? 'Right' + connection.to : connection.to;
         var connObj = {
           uuids: [sourceId, targetId],
-          detachable: false
+          detachable: true
         };
         this.instance.connect(connObj);
       });
@@ -139,9 +152,20 @@ class DAG extends Component {
   }
   cleanUpGraph() {
     let {nodes, connections} = this.store.getState();
+    let parent = document.querySelector('.diagram-container');
+    let parentDimension = {
+      height: parent.getBoundingClientRect().height,
+      width: parent.getBoundingClientRect().width
+    };
+
     this.store.dispatch({
       type: 'CLEANUP-GRAPH',
       payload: {nodes, connections}
+    });
+
+    this.store.dispatch({
+      type: 'FIT-TO-SCREEN',
+      payload: {nodes, connections, parentDimension}
     });
     setTimeout(this.instance.repaintEverything.bind(this));
   }
@@ -161,18 +185,22 @@ class DAG extends Component {
               </div>
             </div>
             <div className="col-xs-10">
-              <div id="dag-container">
-                {
-                  this.state.nodes.map(function(node) {
-                    return (
-                        <div className="box text-center" id={node.id} key={node.id} style={node.style}>
-                          <div className={classnames({'dag-node': true, [node.type]: true})}></div>
-                            <div className="label">{node.name}</div>
-                        </div>
-                      );
-                  })
-                }
+              <div className="diagram-container">
+                <div id="dag-container"
+                     style={{transform: 'scale(' + this.state.graph.scale + ')'}}>
+                  {
+                    this.state.nodes.map(function(node) {
+                      return (
+                          <div className="box text-center" id={node.id} key={node.id} style={node.style}>
+                            <div className={classnames({'dag-node': true, [node.type]: true})}></div>
+                              <div className="label">{node.name}</div>
+                          </div>
+                        );
+                    })
+                  }
+                </div>
               </div>
+
             </div>
           </div>
           <br/>
@@ -201,10 +229,37 @@ let predefinedState = {
       name: 'Sink Node',
       type: 'sink'
     },
+    {
+      id: '3',
+      name: 'Transform Node 1',
+      type: 'transform'
+    },
+    {
+      id: '4',
+      name: 'Transform Node 2',
+      type: 'transform'
+    },
+    {
+      id: '5',
+      name: 'Transform Node 3',
+      type: 'transform'
+    }
   ],
   connections: [
     {
       from: '1',
+      to: '3'
+    },
+    {
+      from: '3',
+      to: '4'
+    },
+    {
+      from: '4',
+      to: '5'
+    },
+    {
+      from: '5',
       to: '2'
     }
   ]
