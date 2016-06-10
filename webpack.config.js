@@ -7,7 +7,7 @@ var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 module.exports = {
   context: __dirname + '/src',
   entry: {
-    'react-dag': './app-bootstrap.js',
+    'react-dag': './app.js',
     'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname'],
     'html': './index.html'
   },
