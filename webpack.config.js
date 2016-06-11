@@ -32,11 +32,13 @@ module.exports = {
         loader: 'file?name=[name].[ext]'
       },
       {
-        test : /\.(ttf|eot|svg|otf|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader : 'file?name=fonts/[name].[ext]'
+        test:  /\.(ttf|eot|svg|woff|woff(2))(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "file-loader"
       },
       {
-        test: /\.less$/,
+        test: [
+          /\.less$/
+        ],
         loader: 'style-loader!css-loader!less-loader'
       },
       {
