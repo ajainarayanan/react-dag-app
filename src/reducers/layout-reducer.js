@@ -41,7 +41,7 @@ export function graphLayout(state = [], action = {}) {
   }
 }
 
-export function graph(state = { scale: 1}, action = {}) {
+export function graph(state = { scale: 1, translate: {}}, action = {}) {
   switch(action.type) {
     case 'FIT-TO-SCREEN':
       let {nodes, connections, parentDimension} = action.payload;
@@ -50,9 +50,15 @@ export function graph(state = { scale: 1}, action = {}) {
       let widthScale = (width - 100) / layout.graph().width;
       let heightScale = (height - 100) / layout.graph().height;
       let scale = Math.min(widthScale, heightScale);
-      console.log('Graph Dimensions', layout.graph().width, layout.graph().height);
-      console.log('Parent Dimensions', width, height);
-      return Object.assign({}, state, {scale: scale > 1 ? 1 : scale});
+      let scaledDownGraphWidth = layout.graph().width * scale;
+      let scaledDownGraphHeight = layout.graph().height * scale;
+
+      let translateX = ((width - 100) > scaledDownGraphWidth ? ((width - 100) - scaledDownGraphWidth) / 2 : 0);
+      let translateY = ((height - 100) > scaledDownGraphHeight ? ((height - 100) - scaledDownGraphHeight) / 2 : 0);
+      return Object.assign({}, state, {
+        scale: scale > 1 ? 1 : scale,
+        translate: `${translateX}px , ${translateY.toString()}px`
+      });
     default:
       return state;
   }

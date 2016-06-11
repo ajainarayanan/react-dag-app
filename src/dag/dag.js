@@ -219,7 +219,16 @@ export class DAG extends Component {
             <div className="col-xs-10">
               <div className="diagram-container">
                 <div id="dag-container"
-                     style={{transform: 'scale(' + this.state.graph.scale + ')'}}>
+                     style={
+                       {
+                         transform: 'scale(' +
+                         this.state.graph.scale +
+                         ') ' +
+                         'translate( ' +
+                         this.state.graph.translate +
+                         ')'
+                      }
+                    }>
                  {loadContent()}
                  {loadNodes()}
                 </div>
