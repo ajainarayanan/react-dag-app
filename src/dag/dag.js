@@ -2,7 +2,7 @@ import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import {configureStore} from './app-store';
 import {getSettings, getIcon} from './dag-settings';
-
+import uuid from 'node-uuid';
 
 require('./styles/dag.less');
 require('jsPlumb');
@@ -14,10 +14,11 @@ export class DAG extends Component {
   constructor(props) {
     super(props);
     this.props = props;
+    let {data, additionalReducersMap, middlewares = []} = props;
     this.store = configureStore(
-      props.data,
-      props.additionalReducersMap,
-      [...props.middlewares]
+      data,
+      additionalReducersMap,
+      [...middlewares]
     );
     this.state = this.store.getState();
     if (props.data) {
@@ -28,7 +29,7 @@ export class DAG extends Component {
 
     this.store.subscribe( () => {
       this.setState(this.store.getState());
-      this.renderGraph();
+      setTimeout(this.renderGraph.bind(this));
     });
 
     jsPlumb.ready(() => {
@@ -134,12 +135,14 @@ export class DAG extends Component {
   }
   componentDidMount() {
     this.setState(this.store.getState());
+    // Because html id needs to start with a character
+    this.setState({componentId: 'A' + uuid.v4()});
     setTimeout( () => {
-      if (Object.keys(this.props.data).length) {
+      this.toggleLoading(false);
+      if (Object.keys(this.props.data || {}).length) {
         this.renderGraph();
         this.cleanUpGraph();
       }
-      this.toggleLoading(false);
     }, 1000);
   }
   addNode(type) {
@@ -156,7 +159,7 @@ export class DAG extends Component {
   }
   cleanUpGraph() {
     let {nodes, connections} = this.store.getState();
-    let parent = document.querySelector('.diagram-container');
+    let parent = document.querySelector(`#${this.state.componentId} .diagram-container`);
     let parentDimension = {
       height: parent.getBoundingClientRect().height,
       width: parent.getBoundingClientRect().width
@@ -173,10 +176,35 @@ export class DAG extends Component {
     });
     setTimeout(this.instance.repaintEverything.bind(this));
   }
-
+  componentWillUnmount() {
+    this.store.dispatch({
+      type: 'RESET'
+    });
+  }
   render() {
+    const loadContent = () => {
+      if (this.state.graph.loading) {
+        return (
+          <div className="fa fa-spin fa-refresh fa-5x"></div>
+        );
+      }
+    };
+    const loadNodes = () => {
+      if (!this.state.graph.loading) {
+        return (
+          this.state.nodes.map(function(node) {
+            return (
+                <div className="box text-center" id={node.id} key={node.id} style={node.style}>
+                  <div className={classnames({'dag-node': true, [node.type]: true})}></div>
+                    <div className="label">{node.name}</div>
+                </div>
+              )
+          })
+        );
+      }
+    };
     return (
-      <my-dag>
+      <my-dag id={this.state.componentId}>
         <div className="container">
           <div className="row">
             <div className="col-xs-2">
@@ -192,20 +220,8 @@ export class DAG extends Component {
               <div className="diagram-container">
                 <div id="dag-container"
                      style={{transform: 'scale(' + this.state.graph.scale + ')'}}>
-                 <div className={classnames("fa fa-spin fa-refresh", {'invisible': !this.state.graph.loading, '': this.state.graph.loading})}>
-                 </div>
-                  <div className={classnames("", {'invisible': this.state.graph.loading, '': !this.state.graph.loading})}>
-                  {
-                    this.state.nodes.map(function(node) {
-                      return (
-                          <div className="box text-center" id={node.id} key={node.id} style={node.style}>
-                            <div className={classnames({'dag-node': true, [node.type]: true})}></div>
-                              <div className="label">{node.name}</div>
-                          </div>
-                        );
-                    })
-                  }
-                  </div>
+                 {loadContent()}
+                 {loadNodes()}
                 </div>
               </div>
             </div>

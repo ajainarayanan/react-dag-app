@@ -20,6 +20,8 @@ let nodes = (state = [], action = {}) => {
         }
         return node;
       });
+    case 'RESET':
+      return [];
     default:
       return state;
   }
@@ -36,6 +38,8 @@ const connections = (state = [], action = {}) => {
       ];
     case 'SET-CONNECTIONS':
       return [...action.payload.connections];
+    case 'RESET':
+      return [];
     default:
       return state;
   }
@@ -45,12 +49,22 @@ const graph = (state = {}, action = {}) => {
   switch(action.type) {
     case 'LOADING':
       return Object.assign({}, state, {loading: action.payload.loading});
+    case 'RESET':
+      return {};
     default:
       return state;
   }
 };
 
-let combinedReducers = (reducersMap) => {
+const defaultReducersMap = () => {
+  return {
+    nodes: [ (state = [], action = {}) => state ],
+    graph: [ (state = {}, action = {}) => state ],
+    connections: [ (state = [], action = {}) => state ]
+  }
+};
+
+let combinedReducers = (reducersMap = defaultReducersMap()) => {
   let nodesReducers = [nodes].concat(reducersMap['nodes']);
   let graphReducers = [graph].concat(reducersMap['graph']);
 

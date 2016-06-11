@@ -22,39 +22,82 @@ class App extends Component {
       complexTab: false
     };
   }
+  componentDidMount() {
+    this.showMinTab();
+  }
   showComplexTab() {
-    console.log('simple change')
+    ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
+    ReactDOM.render(
+      <DAG  data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      document.getElementById('complexTabContent')
+    );
     this.setState(Object.assign({}, this.state, {
+      minTab: false,
       simpleTab: false,
       complexTab: true
     }));
   }
   showSimpleTab() {
-    console.log('complex change', this);
+    ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
+    ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
+    ReactDOM.render(
+      <DAG middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      document.getElementById('simpleTabContent')
+    );
     this.setState(Object.assign({}, this.state, {
+      minTab: false,
       simpleTab: true,
       complexTab: false
     }));
   }
+  showMinTab() {
+    ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
+    ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
+    ReactDOM.render(<DAG/>, document.getElementById('minTabContent'));
+    this.setState(Object.assign({}, this.state, {
+      minTab: true,
+      simpleTab: false,
+      complexTab: false
+    }));
+  }
   render() {
-    let simpleClassName = classnames('', {'simple': this.state.simpleTab, 'hidden': !this.state.simpleTab});
-    let complexClassName = classnames('', {'complex': this.state.complexTab, 'hidden': !this.state.complexTab});
+    const { minTab, simpleTab, complexTab } = this.state;
+    const minTabHeader = classnames("btn btn-default", {'active': minTab});
+    const simpleTabHeader = classnames("btn btn-default", {'active': simpleTab});
+    const complexTabHeader = classnames("btn btn-default", {'active': complexTab});
+
+    const minTabContentClass = classnames({'simple': simpleTab, 'hidden': !minTab});
+    const simpleTabContentClass = classnames({'simple': simpleTab, 'hidden': !simpleTab});
+    const complexTabContentClass = classnames({'complex': complexTab, 'hidden': !complexTab});
     return (
       <My-App>
         <h3> An Example of a Generic DAG </h3>
         <br />
         <div className="nav nav-tabs">
           <ul className="btn-group">
-            <li className={classnames("btn btn-default", {'active': this.state.simpleTab})} onClick={this.showSimpleTab.bind(this)}> Simple Tab </li>
-            <li className={classnames("btn btn-default", {'active': this.state.complexTab})} onClick={this.showComplexTab.bind(this)}>  Complex Tab </li>
+            <li className={minTabHeader}
+                onClick={this.showMinTab.bind(this)}>
+                Bare Minimum Tab
+            </li>
+            <li className={simpleTabHeader}
+                onClick={this.showSimpleTab.bind(this)}>
+                Simple Tab
+            </li>
+            <li className={complexTabHeader}
+                onClick={this.showComplexTab.bind(this)}>
+                Complex Pre-rendered Tab
+            </li>
           </ul>
         </div>
         <div className="tab-content">
-          <div className={simpleClassName}>
-            Simple Tab
+          <div className={minTabContentClass}>
+            <div id="minTabContent"></div>
           </div>
-          <div className={complexClassName}>
-            {this.state.complexTab ? <DAG data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/> : null}
+          <div className={simpleTabContentClass}>
+            <div id="simpleTabContent"></div>
+          </div>
+          <div className={complexTabContentClass}>
+            <div id="complexTabContent"></div>
           </div>
         </div>
       </My-App>

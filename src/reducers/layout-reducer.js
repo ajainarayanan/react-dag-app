@@ -50,6 +50,8 @@ export function graph(state = { scale: 1}, action = {}) {
       let widthScale = (width - 100) / layout.graph().width;
       let heightScale = (height - 100) / layout.graph().height;
       let scale = Math.min(widthScale, heightScale);
+      console.log('Graph Dimensions', layout.graph().width, layout.graph().height);
+      console.log('Parent Dimensions', width, height);
       return Object.assign({}, state, {scale: scale > 1 ? 1 : scale});
     default:
       return state;
