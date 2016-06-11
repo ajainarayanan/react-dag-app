@@ -13,29 +13,22 @@ var classnames = require('classname');
 export class DAG extends Component {
   constructor(props) {
     super(props);
+    this.props = props;
     this.store = configureStore(
       props.data,
       props.additionalReducersMap,
       [...props.middlewares]
     );
-    if (props.data) {
-      setTimeout(this.cleanUpGraph.bind(this));
-    }
     this.state = this.store.getState();
-    console.log('scale', this.state.graph.scale);
+    if (props.data) {
+      this.toggleLoading(true);
+    }
     this.endpoints = [];
     this.settings = getSettings();
 
-    const renderGraph = () => {
-      this.addEndpoints();
-      this.makeNodesDraggable();
-      this.renderConnections();
-      this.renderCleanedUpGraph();
-    };
-
     this.store.subscribe( () => {
       this.setState(this.store.getState());
-      setTimeout(renderGraph.bind(this));
+      this.renderGraph();
     });
 
     jsPlumb.ready(() => {
@@ -44,16 +37,20 @@ export class DAG extends Component {
       this.instance = jsPlumb.getInstance(dagSettings);
       this.instance.bind('connection', this.makeConnections.bind(this));
       this.instance.bind('connectionDetached', this.makeConnections.bind(this));
-
-      if (Object.keys(props.data).length) {
-        renderGraph.call(this);
+    });
+  }
+  toggleLoading(loading) {
+    this.store.dispatch({
+      type: 'LOADING',
+      payload: {
+        loading: loading
       }
     });
   }
-  renderCleanedUpGraph() {
-    let scale = this.store.getState().graph.scale;
-    this.instance.setZoom(scale);
-    this.render();
+  renderGraph() {
+    this.addEndpoints();
+    this.makeNodesDraggable();
+    this.renderConnections();
   }
   makeNodesDraggable() {
     let nodes = document.querySelectorAll('#dag-container .box');
@@ -137,6 +134,13 @@ export class DAG extends Component {
   }
   componentDidMount() {
     this.setState(this.store.getState());
+    setTimeout( () => {
+      if (Object.keys(this.props.data).length) {
+        this.renderGraph();
+        this.cleanUpGraph();
+      }
+      this.toggleLoading(false);
+    }, 1000);
   }
   addNode(type) {
     this.store.dispatch({
@@ -173,7 +177,6 @@ export class DAG extends Component {
   render() {
     return (
       <my-dag>
-        <h4> Generic DAG </h4>
         <div className="container">
           <div className="row">
             <div className="col-xs-2">
@@ -189,6 +192,9 @@ export class DAG extends Component {
               <div className="diagram-container">
                 <div id="dag-container"
                      style={{transform: 'scale(' + this.state.graph.scale + ')'}}>
+                 <div className={classnames("fa fa-spin fa-refresh", {'invisible': !this.state.graph.loading, '': this.state.graph.loading})}>
+                 </div>
+                  <div className={classnames("", {'invisible': this.state.graph.loading, '': !this.state.graph.loading})}>
                   {
                     this.state.nodes.map(function(node) {
                       return (
@@ -199,6 +205,7 @@ export class DAG extends Component {
                         );
                     })
                   }
+                  </div>
                 </div>
               </div>
             </div>

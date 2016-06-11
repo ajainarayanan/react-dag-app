@@ -43,6 +43,8 @@ const connections = (state = [], action = {}) => {
 
 const graph = (state = {}, action = {}) => {
   switch(action.type) {
+    case 'LOADING':
+      return Object.assign({}, state, {loading: action.payload.loading});
     default:
       return state;
   }
