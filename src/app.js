@@ -6,6 +6,8 @@ import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 import {graphLayout, graph} from './reducers/layout-reducer';
 var classnames = require('classname');
+import {getSettings} from './settings/dag-settings';
+
 require('font-awesome-webpack');
 require('./app.less');
 
@@ -28,7 +30,7 @@ class App extends Component {
   showComplexTab() {
     ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
     ReactDOM.render(
-      <DAG  data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      <DAG data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
       document.getElementById('complexTabContent')
     );
     this.setState(Object.assign({}, this.state, {
@@ -53,7 +55,7 @@ class App extends Component {
   showMinTab() {
     ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
     ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
-    ReactDOM.render(<DAG/>, document.getElementById('minTabContent'));
+    ReactDOM.render(<DAG settings={getSettings()}/>, document.getElementById('minTabContent'));
     this.setState(Object.assign({}, this.state, {
       minTab: true,
       simpleTab: false,

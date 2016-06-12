@@ -1,7 +1,7 @@
 import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
 import {configureStore} from './app-store';
-import {getSettings, getIcon} from './dag-settings';
+import {getSettings} from './dag-settings';
 import uuid from 'node-uuid';
 
 require('./styles/dag.less');
@@ -25,8 +25,11 @@ export class DAG extends Component {
       this.toggleLoading(true);
     }
     this.endpoints = [];
-    this.settings = getSettings();
-
+    if (props.settings) {
+      this.settings = Object.assign({}, props.settings);
+    } else {
+      this.settings = getSettings();
+    }
     this.store.subscribe( () => {
       this.setState(this.store.getState());
       setTimeout(this.renderGraph.bind(this));
