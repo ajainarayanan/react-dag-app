@@ -50,13 +50,14 @@ export function graph(state = { scale: 1, translate: {}}, action = {}) {
       let widthScale = (width - 100) / layout.graph().width;
       let heightScale = (height - 100) / layout.graph().height;
       let scale = Math.min(widthScale, heightScale);
+      scale = scale > 1 ? 1 : scale;
       let scaledDownGraphWidth = layout.graph().width * scale;
       let scaledDownGraphHeight = layout.graph().height * scale;
 
       let translateX = ((width - 100) > scaledDownGraphWidth ? ((width - 100) - scaledDownGraphWidth) / 2 : 0);
       let translateY = ((height - 100) > scaledDownGraphHeight ? ((height - 100) - scaledDownGraphHeight) / 2 : 0);
       return Object.assign({}, state, {
-        scale: scale > 1 ? 1 : scale,
+        scale: scale,
         translate: `${translateX}px , ${translateY.toString()}px`
       });
     default:
