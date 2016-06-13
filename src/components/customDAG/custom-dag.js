@@ -17,6 +17,7 @@ export class CustomDAG extends Component {
     this.settings = props.settings;
     this.middlewares = props.middlewares;
     this.additionalReducersMap = props.additionalReducersMap;
+    this.data = props.data;
     this.MyTabId = uuid.v4();
   }
   cleanUpGraph() {
@@ -25,6 +26,7 @@ export class CustomDAG extends Component {
   componentDidMount() {
     this.myDag = ReactDOM.render(
       <DAG settings={this.settings}
+           data={this.data}
            additionalReducersMap={this.additionalReducersMap}
            middlewares={this.middlewares}>
         <div className="action-controls">

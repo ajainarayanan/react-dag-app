@@ -2,7 +2,7 @@ export const data = {
   nodes: [
     {
         "id": "1",
-        "name": "Source Node",
+        "label": "Source Node",
         "type": "source",
         "style": {
             "top": "223px",
@@ -11,7 +11,7 @@ export const data = {
     },
     {
         "id": "2",
-        "name": "Sink Node",
+        "label": "Sink Node",
         "type": "sink",
         "style": {
             "top": "261px",
@@ -20,7 +20,7 @@ export const data = {
     },
     {
         "id": "3",
-        "name": "Transform Node 3",
+        "label": "Transform Node 3",
         "type": "transform",
         "style": {
             "top": "375px",
@@ -29,7 +29,7 @@ export const data = {
     },
     {
         "id": "3.5",
-        "name": "Transform Node 3.5",
+        "label": "Transform Node 3.5",
         "type": "transform",
         "style": {
             "top": "489px",
@@ -38,7 +38,7 @@ export const data = {
     },
     {
         "id": "4",
-        "name": "Transform Node 4",
+        "label": "Transform Node 4",
         "type": "transform",
         "style": {
             "top": "109px",
@@ -47,7 +47,7 @@ export const data = {
     },
     {
         "id": "4.5",
-        "name": "Transform Node 4.5",
+        "label": "Transform Node 4.5",
         "type": "transform",
         "style": {
             "top": "33px",
@@ -56,7 +56,7 @@ export const data = {
     },
     {
         "id": "5",
-        "name": "Transform Node 5",
+        "label": "Transform Node 5",
         "type": "transform",
         "style": {
             "top": "185px",
@@ -65,7 +65,7 @@ export const data = {
     },
     {
         "id": "741a4a95-fe28-4266-a2ed-c799732499c8",
-        "name": "transform47432",
+        "label": "transform47432",
         "type": "transform",
         "style": {
             "top": "489px",
@@ -74,7 +74,7 @@ export const data = {
     },
     {
         "id": "8c57a51e-f2af-4f1e-9181-59d948ba2de3",
-        "name": "transform55724",
+        "label": "transform55724",
         "type": "transform",
         "style": {
             "top": "337px",
@@ -83,7 +83,7 @@ export const data = {
     },
     {
         "id": "ecc7ec1b-1a6f-46fd-a485-7268bae1bb72",
-        "name": "transform55875",
+        "label": "transform55875",
         "type": "transform",
         "style": {
             "top": "375px",
@@ -92,7 +92,7 @@ export const data = {
     },
     {
         "id": "2dc1dc76-4483-4c80-a04b-b26e2847053c",
-        "name": "transform81089",
+        "label": "transform81089",
         "type": "transform",
         "style": {
             "top": "33px",
@@ -101,7 +101,7 @@ export const data = {
     },
     {
         "id": "f2d2a5b0-3392-4d27-9b0a-f4130af8d9f9",
-        "name": "transform81249",
+        "label": "transform81249",
         "type": "transform",
         "style": {
             "top": "33px",
@@ -110,7 +110,7 @@ export const data = {
     },
     {
         "id": "e55b2602-f988-4e4c-9339-f231ac70705f",
-        "name": "transform81400",
+        "label": "transform81400",
         "type": "transform",
         "style": {
             "top": "109px",
@@ -119,7 +119,7 @@ export const data = {
     },
     {
         "id": "67b70b83-d964-43f3-a1a0-f2bacb53c1bc",
-        "name": "transform22356",
+        "label": "transform22356",
         "type": "transform",
         "style": {
             "top": "413px",
@@ -128,7 +128,7 @@ export const data = {
     },
     {
         "id": "c9dd4f48-f49c-44fb-b723-3ce8141f4da4",
-        "name": "transform22620",
+        "label": "transform22620",
         "type": "transform",
         "style": {
             "top": "375px",
@@ -137,7 +137,7 @@ export const data = {
     },
     {
         "id": "a630e804-18a0-4dba-81cd-6cf34e4354ee",
-        "name": "transform22804",
+        "label": "transform22804",
         "type": "transform",
         "style": {
             "top": "261px",
