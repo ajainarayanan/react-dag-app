@@ -7,25 +7,18 @@ module.exports = {
   context: __dirname + '/src',
   entry: {
     'react-dag': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname'],
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'dag'],
     'html': './index.html'
   },
   module: {
+    preLoaders: [
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   loader: "jshint-loader"
+      // }
+    ],
     loaders: [
-      {
-        test: require.resolve('jsPlumb'),
-        loaders: [
-          'imports?this=>window',
-          'script'
-        ]
-      },
-      {
-        test: /node_module\/dagre\/dist\/dagre.core.js/,
-        loaders: [
-          'imports?this=>window',
-          'script'
-        ]
-      },
       {
         test: /\.html$/,
         loader: 'file?name=[name].[ext]'
@@ -51,14 +44,30 @@ module.exports = {
       }
     ]
   },
+  jshint: {
+      camelcase: true,
+      emitErrors: false,
+      failOnHint: false,
+      reporter: function(errors) { }
+  },
   output: {
     filename: './[name].js',
     path: __dirname + '/dist'
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"development"'
+    }),
     new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
     new LodashModuleReplacementPlugin,
-    new webpack.optimize.OccurenceOrderPlugin,
-    new LiveReloadPlugin()
+    new webpack.optimize.DedupePlugin(),
+    new LiveReloadPlugin(),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false,
+    //     drop_console: false,
+    //     dead_code: true
+    //   }
+    // })
   ]
 };

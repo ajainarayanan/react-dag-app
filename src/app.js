@@ -1,16 +1,16 @@
 import React , { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {DAG} from './dag/dag';
+
 import {data} from './data/data';
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 import {graphLayout, graph} from './reducers/layout-reducer';
 var classnames = require('classname');
 import {getSettings} from './settings/dag-settings';
+import {CustomDAG} from './components/customDAG/custom-dag';
 
 require('font-awesome-webpack');
 require('./app.less');
-
 let reducers = {
   nodes: [graphLayout],
   graph: [graph]
@@ -29,8 +29,9 @@ class App extends Component {
   }
   showComplexTab() {
     ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
+    ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
     ReactDOM.render(
-      <DAG data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      <CustomDAG data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
       document.getElementById('complexTabContent')
     );
     this.setState(Object.assign({}, this.state, {
@@ -43,7 +44,7 @@ class App extends Component {
     ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
     ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
     ReactDOM.render(
-      <DAG middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      <CustomDAG middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
       document.getElementById('simpleTabContent')
     );
     this.setState(Object.assign({}, this.state, {
@@ -55,7 +56,7 @@ class App extends Component {
   showMinTab() {
     ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
     ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
-    ReactDOM.render(<DAG settings={getSettings()}/>, document.getElementById('minTabContent'));
+    ReactDOM.render(<CustomDAG settings={getSettings()}/>, document.getElementById('minTabContent'));
     this.setState(Object.assign({}, this.state, {
       minTab: true,
       simpleTab: false,
@@ -75,31 +76,29 @@ class App extends Component {
       <My-App>
         <h3> An Example of a Generic DAG </h3>
         <br />
-        <div className="nav nav-tabs">
-          <ul className="btn-group">
-            <li className={minTabHeader}
-                onClick={this.showMinTab.bind(this)}>
-                Bare Minimum Tab
-            </li>
-            <li className={simpleTabHeader}
-                onClick={this.showSimpleTab.bind(this)}>
-                Simple Tab
-            </li>
-            <li className={complexTabHeader}
-                onClick={this.showComplexTab.bind(this)}>
-                Complex Pre-rendered Tab
-            </li>
-          </ul>
-        </div>
-        <div className="tab-content">
-          <div className={minTabContentClass}>
-            <div id="minTabContent"></div>
-          </div>
-          <div className={simpleTabContentClass}>
-            <div id="simpleTabContent"></div>
-          </div>
-          <div className={complexTabContentClass}>
-            <div id="complexTabContent"></div>
+        <div className="container">
+          <div className="row">
+            <div className="col-xs-12">
+              <ul className="btn-group ">
+                <li className={minTabHeader}
+                    onClick={this.showMinTab.bind(this)}>
+                    Bare Minimum Tab
+                </li>
+                <li className={simpleTabHeader}
+                    onClick={this.showSimpleTab.bind(this)}>
+                    Simple Tab
+                </li>
+                <li className={complexTabHeader}
+                    onClick={this.showComplexTab.bind(this)}>
+                    Complex Pre-rendered Tab
+                </li>
+              </ul>
+            </div>
+            <div className="col-xs-12">
+              <div id="minTabContent"></div>
+              <div id="simpleTabContent"></div>
+              <div id="complexTabContent"></div>
+            </div>
           </div>
         </div>
       </My-App>
