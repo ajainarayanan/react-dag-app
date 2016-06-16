@@ -2,7 +2,6 @@ var webpack = require('webpack');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-var HappyPack = require('happypack');
 
 module.exports = {
   context: __dirname + '/src',
