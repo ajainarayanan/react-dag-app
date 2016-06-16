@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {DAG} from 'dag';
+import {DAG} from 'react-dag';
 import uuid from 'node-uuid';
 require('./custom-dag.less');
 
