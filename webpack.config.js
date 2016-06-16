@@ -7,8 +7,8 @@ var HappyPack = require('happypack');
 module.exports = {
   context: __dirname + '/src',
   entry: {
-    'react-dag': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'dag'],
+    'react-dag-app': './app.js',
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag'],
     'html': './index.html'
   },
   module: {
@@ -63,7 +63,7 @@ module.exports = {
     new LiveReloadPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: true,
+        warnings: false,
         drop_console: false,
         dead_code: true
       },
