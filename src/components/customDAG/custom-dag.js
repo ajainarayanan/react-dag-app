@@ -31,12 +31,13 @@ export class CustomDAG extends Component {
            middlewares={this.middlewares}>
         <div className="action-controls">
           <div className="btn btn-group btn-group-sm">
-            <div className="btn btn-default">
+            {/* To be implemented */}
+            {/*<div className="btn btn-default">
               <i className="fa fa-plus"></i>
             </div>
             <div className="btn btn-default">
               <i className="fa fa-minus"></i>
-            </div>
+            </div>*/}
             <div className="btn btn-default" onClick={this.cleanUpGraph.bind(this)}>
               <i className="fa fa-expand"></i>
             </div>
