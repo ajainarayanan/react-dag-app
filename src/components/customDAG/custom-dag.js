@@ -16,12 +16,24 @@ export class CustomDAG extends Component {
     super(props);
     this.settings = props.settings;
     this.middlewares = props.middlewares;
+    this.actions = props.actions || [];
     this.additionalReducersMap = props.additionalReducersMap;
     this.data = props.data;
     this.MyTabId = uuid.v4();
   }
   cleanUpGraph() {
     this.myDag.cleanUpGraph();
+  }
+  dispatchAction(action) {
+    var matchedAction = this.actions
+      .find( acn => acn.name === action.name);
+    if (typeof matchedAction === 'object') {
+      const payload = Object.assign({}, this.myDag.store.getState(), action.payload || {});
+      this.myDag.store.dispatch({
+        type: matchedAction.name ,
+        payload
+      });
+    }
   }
   componentDidMount() {
     this.myDag = ReactDOM.render(
@@ -30,18 +42,17 @@ export class CustomDAG extends Component {
            additionalReducersMap={this.additionalReducersMap}
            middlewares={this.middlewares}>
         <div className="action-controls">
-          <div className="btn btn-group btn-group-sm">
-            {/* To be implemented */}
-            {/*<div className="btn btn-default">
-              <i className="fa fa-plus"></i>
-            </div>
-            <div className="btn btn-default">
-              <i className="fa fa-minus"></i>
-            </div>*/}
-            <div className="btn btn-default" onClick={this.cleanUpGraph.bind(this)}>
-              <i className="fa fa-expand"></i>
-            </div>
-          </div>
+          {
+            this.actions.map( acn => {
+              return (
+                <div className="btn btn-group btn-group-sm">
+                  <div className="btn btn-default" onClick={this.dispatchAction.bind(this, acn)}>
+                    <i className={acn.className}></i>
+                  </div>
+                </div>
+              );
+            })
+          }
         </div>
       </DAG>,
       document.getElementById(this.MyTabId)
