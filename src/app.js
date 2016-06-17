@@ -28,10 +28,29 @@ class App extends Component {
     this.showMinTab();
   }
   showComplexTab() {
+    const actions = [
+      {
+        name: 'FIT-TO-SCREEN',
+        className: 'fa fa-expand',
+        payload: { parentSelector: `#complexTabContent custom-dag my-dag #dag-container` }
+      },
+      {
+         name: 'ZOOM-IN',
+         className: 'fa fa-plus'
+      },
+      {
+        name: 'ZOOM-OUT',
+        className: 'fa fa-minus'
+      }
+    ];
     ReactDOM.unmountComponentAtNode(document.getElementById('simpleTabContent'));
     ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
     ReactDOM.render(
-      <CustomDAG data={data} middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      <CustomDAG
+        data={data}
+        actions={actions}
+        middlewares={[loggerMiddleware]}
+        additionalReducersMap={reducers}/>,
       document.getElementById('complexTabContent')
     );
     this.setState(Object.assign({}, this.state, {
@@ -41,10 +60,20 @@ class App extends Component {
     }));
   }
   showSimpleTab() {
+    const actions = [
+      {
+        name: 'FIT-TO-SCREEN',
+        className: 'fa fa-expand',
+        payload: { parentSelector: `#simpleTabContent custom-dag my-dag #dag-container` }
+      }
+    ];
     ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
     ReactDOM.unmountComponentAtNode(document.getElementById('complexTabContent'));
     ReactDOM.render(
-      <CustomDAG middlewares={[loggerMiddleware]} additionalReducersMap={reducers}/>,
+      <CustomDAG
+        actions={actions}
+        middlewares={[loggerMiddleware]}
+        additionalReducersMap={reducers}/>,
       document.getElementById('simpleTabContent')
     );
     this.setState(Object.assign({}, this.state, {
