@@ -41,10 +41,20 @@ export function graphLayout(state = [], action = {}) {
   }
 }
 
+const getDimension = (selector) => {
+    const parent = document.querySelector(selector);
+    const parentDimension = {
+      height: parent.getBoundingClientRect().height,
+      width: parent.getBoundingClientRect().width
+    };
+    return parentDimension;
+};
+
 export function graph(state = { scale: 1, translate: {}}, action = {}) {
   switch(action.type) {
     case 'FIT-TO-SCREEN':
-      let {nodes, connections, parentDimension} = action.payload;
+      let {nodes, connections, parentSelector} = action.payload;
+      const parentDimension = getDimension(parentSelector);
       let layout = getLayout(100, {nodes, connections});
       let {width, height} = parentDimension;
       let widthScale = (width - 100) / layout.graph().width;
@@ -60,6 +70,10 @@ export function graph(state = { scale: 1, translate: {}}, action = {}) {
         scale: scale,
         translate: `${translateX}px , ${translateY.toString()}px`
       });
+    case 'ZOOM-IN':
+      return Object.assign({}, state, {scale: (state.scale + 0.1)});
+    case 'ZOOM-OUT':
+      return Object.assign({}, state, {scale: (state.scale - 0.1)});
     default:
       return state;
   }
