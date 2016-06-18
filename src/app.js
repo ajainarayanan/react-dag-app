@@ -32,7 +32,7 @@ class App extends Component {
       {
         name: 'FIT-TO-SCREEN',
         className: 'fa fa-expand',
-        payload: { parentSelector: `#complexTabContent custom-dag my-dag #dag-container` }
+        payload: { parentSelector: `#complexTabContent custom-dag my-dag .diagram-container` }
       },
       {
          name: 'ZOOM-IN',
@@ -64,7 +64,7 @@ class App extends Component {
       {
         name: 'FIT-TO-SCREEN',
         className: 'fa fa-expand',
-        payload: { parentSelector: `#simpleTabContent custom-dag my-dag #dag-container` }
+        payload: { parentSelector: `#simpleTabContent custom-dag my-dag .diagram-container` }
       }
     ];
     ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
