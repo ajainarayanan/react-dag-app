@@ -21,18 +21,23 @@ export class CustomDAG extends Component {
     this.data = props.data;
     this.MyTabId = uuid.v4();
   }
-  cleanUpGraph() {
-    this.myDag.cleanUpGraph();
-  }
   dispatchAction(action) {
     var matchedAction = this.actions
-      .find( acn => acn.name === action.name);
+      .find( acn => acn.id === action.id);
     if (typeof matchedAction === 'object') {
-      const payload = Object.assign({}, this.myDag.store.getState(), action.payload || {});
-      this.myDag.store.dispatch({
-        type: matchedAction.name ,
-        payload
+      matchedAction.actions.forEach((acn) => {
+        let payload = {};
+        if (typeof acn.payload === 'function') {
+          payload = Object.assign({}, this.myDag.store.getState(), acn.payload() || {});
+        } else {
+          payload = Object.assign({}, this.myDag.store.getState(), acn.payload || {});
+        }
+        this.myDag.store.dispatch({
+          type: acn.name ,
+          payload
+        });
       });
+      setTimeout(this.myDag.instance.repaintEverything);
     }
   }
   componentDidMount() {

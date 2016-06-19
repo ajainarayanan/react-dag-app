@@ -2,7 +2,33 @@ var webpack = require('webpack');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-
+var plugins =
+[
+  new webpack.DefinePlugin({
+    'process.env':{
+      'NODE_ENV': JSON.stringify("production"),
+      '__DEVTOOLS__': false
+    },
+  }),
+  new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
+  new LodashModuleReplacementPlugin,
+  new webpack.optimize.DedupePlugin(),
+  new LiveReloadPlugin()
+];
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        drop_console: false,
+        dead_code: true
+      },
+      output: {
+        comments: false
+      }
+    })
+  );
+}
 module.exports = {
   context: __dirname + '/src',
   entry: {
@@ -49,26 +75,5 @@ module.exports = {
     filename: './[name].js',
     path: __dirname + '/dist'
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env':{
-        'NODE_ENV': JSON.stringify("production"),
-        '__DEVTOOLS__': false
-      },
-    }),
-    new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
-    new LodashModuleReplacementPlugin,
-    new webpack.optimize.DedupePlugin(),
-    new LiveReloadPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-        dead_code: true
-      },
-      output: {
-        comments: false
-      }
-    })
-  ]
+  plugins
 };

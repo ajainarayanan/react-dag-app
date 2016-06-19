@@ -30,16 +30,36 @@ class App extends Component {
   showComplexTab() {
     const actions = [
       {
-        name: 'FIT-TO-SCREEN',
-        className: 'fa fa-expand',
-        payload: { parentSelector: `#complexTabContent custom-dag my-dag #dag-container` }
+        actions: [
+          {
+            name: 'FIT-TO-SCREEN',
+            payload: {
+              parentSelector: `#complexTabContent custom-dag my-dag .diagram-container`
+            }
+          },
+          {
+            name: 'CLEANUP-GRAPH'
+          }
+        ],
+        id: 'FIT-AND-CLEANUP',
+        className: 'fa fa-expand'
       },
       {
-         name: 'ZOOM-IN',
+         id: 'ZOOM-IN',
+         actions: [
+           {
+             name: 'ZOOM-IN'
+           }
+         ],
          className: 'fa fa-plus'
       },
       {
-        name: 'ZOOM-OUT',
+        id: 'ZOOM-OUT',
+        actions: [
+          {
+            name: 'ZOOM-OUT'
+          }
+        ],
         className: 'fa fa-minus'
       }
     ];
@@ -62,9 +82,19 @@ class App extends Component {
   showSimpleTab() {
     const actions = [
       {
-        name: 'FIT-TO-SCREEN',
-        className: 'fa fa-expand',
-        payload: { parentSelector: `#simpleTabContent custom-dag my-dag #dag-container` }
+        actions: [
+          {
+            name: 'FIT-TO-SCREEN',
+            payload: {
+              parentSelector: `#simpleTabContent custom-dag my-dag .diagram-container`
+            }
+          },
+          {
+            name: 'CLEANUP-GRAPH'
+          }
+        ],
+        id: 'FIT-AND-CLEANUP',
+        className: 'fa fa-expand'
       }
     ];
     ReactDOM.unmountComponentAtNode(document.getElementById('minTabContent'));
