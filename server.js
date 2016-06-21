@@ -4,11 +4,12 @@ var fs = require('co-fs');
 var app = koa();
 var serveStatic = require('koa-static');
 
-router.get('/', function *(next) {
+app.use(serveStatic(__dirname + '/dist'));
+
+router.get('*', function *(next) {
   this.type = 'text/html';
   this.body = yield fs.readFile('./dist/index.html');
 });
 app.use(router.routes());
-app.use(serveStatic(__dirname + '/dist'));
 app.listen(3000);
 console.log('Server listening at 3000');

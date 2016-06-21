@@ -2,6 +2,8 @@ var webpack = require('webpack');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+
 var plugins =
 [
   new webpack.DefinePlugin({
@@ -13,7 +15,11 @@ var plugins =
   new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
   new LodashModuleReplacementPlugin,
   new webpack.optimize.DedupePlugin(),
-  new LiveReloadPlugin()
+  new LiveReloadPlugin(),
+  new CopyWebpackPlugin([{
+    from: './index.html',
+    to: 'index.html'
+  }])
 ];
 if (process.env.NODE_ENV === 'production') {
   plugins.push(
@@ -33,8 +39,7 @@ module.exports = {
   context: __dirname + '/src',
   entry: {
     'react-dag-app': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag'],
-    'html': './index.html'
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag']
   },
   module: {
     loaders: [
