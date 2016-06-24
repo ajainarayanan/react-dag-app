@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A generic dag that is drawn with a list of nodes and connections",
   "main": "index.js",
+  "repo": "https://github.com/ajainarayanan/react-dag-app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-build": "webpack --dev-tools --watch -d",
@@ -13,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "3.3.6",
+    "classname": "0.0.0",
     "dagre": "0.7.4",
-    "deep-equal": "1.0.1",
     "font-awesome": "4.6.1",
     "font-awesome-webpack": "0.0.4",
     "lodash": "4.13.1",
@@ -26,8 +27,7 @@
     "react-router-active-component": "4.0.0-rc.0",
     "redux": "3.5.1",
     "redux-logger": "2.6.1",
-    "sort-keys": "1.1.2",
-    "classname": "0.0.0"
+    "redux-undoredo": "ajainarayanan/redux-undoredo#master",
   },
   "devDependencies": {
     "babel-core": "^6.7.6",

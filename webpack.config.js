@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -39,7 +38,7 @@ module.exports = {
   context: __dirname + '/src',
   entry: {
     'react-dag-app': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag']
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag', 'redux-undoredo']
   },
   module: {
     loaders: [
