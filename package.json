@@ -27,7 +27,7 @@
     "react-router-active-component": "4.0.0-rc.0",
     "redux": "3.5.1",
     "redux-logger": "2.6.1",
-    "redux-undoredo": "ajainarayanan/redux-undoredo#master",
+    "redux-undoredo": "ajainarayanan/redux-undoredo#master"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
