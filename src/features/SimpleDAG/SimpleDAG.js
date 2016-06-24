@@ -3,7 +3,7 @@ import { CustomDAG } from '../../components/customDAG/custom-dag';
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 import {graphLayout, graph} from '../../reducers/layout-reducer';
-import undoRedoReducer  from '../../reducers/undoredo-reducer';
+import undoRedoReducer  from 'redux-undoredo';
 
 export default class SimpleDAG extends Component {
   constructor(props) {

@@ -5,7 +5,7 @@ let loggerMiddleware = createLogger();
 import { graphLayout, graph } from '../../reducers/layout-reducer';
 import { getSettings } from '../../settings/dag-settings';
 import { data } from '../../data/data';
-import undoRedoReducer  from '../../reducers/undoredo-reducer';
+import undoRedoReducer  from 'redux-undoredo';
 
 export default class ComplexDAG extends Component {
   constructor(props) {
