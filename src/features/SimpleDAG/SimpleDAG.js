@@ -3,17 +3,19 @@ import { CustomDAG } from '../../components/customDAG/custom-dag';
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 import {graphLayout, graph} from '../../reducers/layout-reducer';
+import undoRedoReducer  from '../../reducers/undoredo-reducer';
 
 export default class SimpleDAG extends Component {
   constructor(props) {
+    let ignoreActions = ['LOADING'];
     super(props);
     this.state = {
       middlewares: [
         loggerMiddleware
       ],
       reducers: {
-        nodes: [graphLayout],
-        graph: [graph]
+        nodes: [graphLayout, undoRedoReducer([], ignoreActions)],
+        graph: [graph, undoRedoReducer({}, ignoreActions)]
       },
       actionControls: [
         {
@@ -30,6 +32,16 @@ export default class SimpleDAG extends Component {
           ],
           id: 'FIT-AND-CLEANUP',
           className: 'fa fa-expand'
+        },
+        {
+          id: 'UNDO',
+          actions: [{ name: 'UNDO' }],
+          className: 'fa fa-undo'
+        },
+        {
+          id: 'REDO',
+          actions: [{ name: 'REDO' }],
+          className: 'fa fa-repeat'
         }
       ]
     };

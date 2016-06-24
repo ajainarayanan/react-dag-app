@@ -1,6 +1,6 @@
 var dagre = require('dagre');
 
-var getLayout = (separation = 10, {nodes, connections}) => {
+const getLayout = (separation = 10, {nodes, connections}) => {
   var rankSeparation = separation;
   var graph = new dagre.graphlib.Graph();
   graph.setGraph({
