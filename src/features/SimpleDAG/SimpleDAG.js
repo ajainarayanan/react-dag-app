@@ -3,7 +3,7 @@ import { CustomDAG } from '../../components/customDAG/custom-dag';
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 import {graphLayout, graph} from '../../reducers/layout-reducer';
-import undoRedoReducer  from 'redux-undoredo';
+import undoredoEnhancer  from 'redux-undoredo';
 
 export default class SimpleDAG extends Component {
   constructor(props) {
@@ -13,9 +13,11 @@ export default class SimpleDAG extends Component {
       middlewares: [
         loggerMiddleware
       ],
+      enhancers: [undoredoEnhancer],
       reducers: {
-        nodes: [graphLayout, undoRedoReducer([], ignoreActions)],
-        graph: [graph, undoRedoReducer({}, ignoreActions)]
+        nodes: [graphLayout],
+        connections: [],
+        graph: [graph]
       },
       actionControls: [
         {
@@ -52,6 +54,7 @@ export default class SimpleDAG extends Component {
       <CustomDAG
         actions={this.state.actionControls}
         middlewares={this.state.middlewares}
+        enhancers={this.state.enhancers}
         additionalReducersMap={this.state.reducers}/>
     );
   }

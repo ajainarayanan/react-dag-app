@@ -16,6 +16,7 @@ export class CustomDAG extends Component {
     super(props);
     this.settings = props.settings;
     this.middlewares = props.middlewares;
+    this.enhancers = props.enhancers;
     this.actions = props.actions || [];
     this.additionalReducersMap = props.additionalReducersMap;
     this.data = props.data;
@@ -45,6 +46,7 @@ export class CustomDAG extends Component {
       <DAG settings={this.settings}
            data={this.data}
            additionalReducersMap={this.additionalReducersMap}
+           enhancers = {this.enhancers}
            middlewares={this.middlewares}>
         <div className="action-controls">
           {
