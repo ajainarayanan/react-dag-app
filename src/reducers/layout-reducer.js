@@ -50,7 +50,8 @@ const getDimension = (selector) => {
     return parentDimension;
 };
 
-export function graph(state = { scale: 1, translate: {}}, action = {}) {
+export function graph(state = { scale: 1, translate: {} }, action = {}) {
+  let scale;
   switch(action.type) {
     case 'FIT-TO-SCREEN':
       let {nodes, connections, parentSelector} = action.payload;
@@ -71,9 +72,11 @@ export function graph(state = { scale: 1, translate: {}}, action = {}) {
         translate: `${translateX}px , ${translateY.toString()}px`
       });
     case 'ZOOM-IN':
-      return Object.assign({}, state, {scale: (state.scale + 0.1)});
+      scale = state.scale || 1;
+      return Object.assign({}, state, {scale: (scale + 0.1)});
     case 'ZOOM-OUT':
-      return Object.assign({}, state, {scale: (state.scale - 0.1)});
+      scale = state.scale || 1;
+      return Object.assign({}, state, {scale: (scale - 0.1)});
     default:
       return state;
   }
