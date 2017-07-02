@@ -4,19 +4,6 @@ import {getSettings} from '../../settings/dag-settings';
 import createLogger from 'redux-logger';
 let loggerMiddleware = createLogger();
 
-export default class BareDAG extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      middlewares: [
-        loggerMiddleware
-      ],
-      actionControls: []
-    };
-  }
-  render() {
-    return (
-      <CustomDAG settings={getSettings()}/>
-    );
-  }
+export default function BareDAG() {
+  return (<CustomDAG settings={getSettings()}/>);
 }

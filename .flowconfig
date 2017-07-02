@@ -1,0 +1,12 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/*
+[include]
+
+[libs]
+./globalscssmodule.js
+./flow-types/*
+
+[options]
+module.name_mapper='.*\(.less\)' -> 'CSSModule'
+module.system=haste
+strip_root=true
