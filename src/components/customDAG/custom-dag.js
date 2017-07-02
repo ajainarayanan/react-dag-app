@@ -134,7 +134,7 @@ export class CustomDAG extends Component {
                       <div className={classnames({'dag-node': true, [node.type]: true})}>
                         <strong
                           className="close-btn"
-                          onClick={this.removeNode.bind(null, node, jsPlumbInstance)}
+                          onClick={this.removeNode.bind(this, node, jsPlumbInstance)}
                         >
                           x
                         </strong>
