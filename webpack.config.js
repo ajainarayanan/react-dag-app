@@ -11,9 +11,12 @@ var plugins =
       '__DEVTOOLS__': false
     },
   }),
-  new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js", Infinity),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: "vendor",
+    minChunks: Infinity,
+    filename: "vendor.js"
+  }),
   new LodashModuleReplacementPlugin,
-  new webpack.optimize.DedupePlugin(),
   new LiveReloadPlugin(),
   new CopyWebpackPlugin([{
     from: './index.html',
@@ -38,13 +41,13 @@ module.exports = {
   context: __dirname + '/src',
   entry: {
     'react-dag-app': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classname', 'node-uuid', 'react-dag', 'redux-undoredo']
+    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classnames', 'node-uuid', 'react-dag', 'redux-undoredo']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /node_module\/dagre\/dist\/dagre.core.js/,
-        loaders: [
+        use: [
           'imports?this=>window',
           'script'
         ]
@@ -52,21 +55,25 @@ module.exports = {
       {
         test: /\.html$/,
         exclude: /node_modules/,
-        loader: 'file?name=[name].[ext]'
+        use: ['file?name=[name].[ext]']
       },
       {
         test: /\.(ttf|eot|svg|woff|woff(2))(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader"
+        use: ["file-loader"]
       },
       {
         test: [
           /\.less$/
         ],
-        loader: 'style-loader!css-loader!less-loader'
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader'
+        ]
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        use: ['babel-loader'],
         exclude: /node_modules/
       }
     ]
