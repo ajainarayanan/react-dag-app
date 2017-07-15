@@ -3,7 +3,7 @@
 */
 import React, { Component } from 'react';
 import { CustomDAG } from '../../components/customDAG/custom-dag';
-import createLogger from 'redux-logger';
+import {createLogger} from 'redux-logger';
 let loggerMiddleware = createLogger();
 import { graphLayout, graph } from '../../reducers/layout-reducer';
 import { getSettings } from '../../settings/dag-settings';
