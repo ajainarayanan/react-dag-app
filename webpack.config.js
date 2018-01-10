@@ -1,86 +1,97 @@
-var webpack = require('webpack');
-var LiveReloadPlugin = require('webpack-livereload-plugin');
-var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+/* eslint-disable no-var, strict, prefer-arrow-callback */
+"use strict";
 
-var plugins =
-[
-  new webpack.DefinePlugin({
-    'process.env':{
-      'NODE_ENV': JSON.stringify("production"),
-      '__DEVTOOLS__': false
-    },
-  }),
-  new webpack.optimize.CommonsChunkPlugin({
-    name: "vendor",
-    minChunks: Infinity,
-    filename: "vendor.js"
-  }),
-  new LodashModuleReplacementPlugin,
-  new LiveReloadPlugin(),
-  new CopyWebpackPlugin([{
-    from: './index.html',
-    to: 'index.html'
-  }])
-];
-if (process.env.NODE_ENV === 'production') {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-        dead_code: true
-      },
-      output: {
-        comments: false
-      }
-    })
-  );
-}
+var path = require("path");
+var webpack = require("webpack");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+
+var packageJson = require("./package.json");
+var vendorDependencies = Object.keys(packageJson["dependencies"]);
+
 module.exports = {
-  context: __dirname + '/src',
+  cache: true,
   entry: {
-    'react-dag-app': './app.js',
-    'vendor': ['react', 'react-dom', 'redux', 'lodash', 'classnames', 'node-uuid', 'react-dag', 'redux-undoredo']
+    main: "./src/index.tsx",
+    vendor: vendorDependencies,
+  },
+  output: {
+    path: path.resolve(__dirname, "./dist"),
+    filename: "[name].js",
+    chunkFilename: "[chunkhash].js",
   },
   module: {
     rules: [
       {
-        test: /node_module\/dagre\/dist\/dagre.core.js/,
-        use: [
-          'imports?this=>window',
-          'script'
-        ]
-      },
-      {
-        test: /\.html$/,
+        test: /\.ts(x?)$/,
         exclude: /node_modules/,
-        use: ['file?name=[name].[ext]']
-      },
-      {
-        test: /\.(ttf|eot|svg|woff|woff(2))(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: ["file-loader"]
-      },
-      {
-        test: [
-          /\.less$/
-        ],
         use: [
-          'style-loader',
-          'css-loader',
-          'less-loader'
-        ]
+          {
+            loader: "ts-loader",
+            options: { transpileOnly: true },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader",
+          {
+            loader: "@epegzz/sass-vars-loader", // read Sass vars from file or options
+            options: {
+              files: [path.resolve(__dirname, "src/styles/colors.js")],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg/,
+        use: [{ loader: "svg-sprite-loader", options: { symbolId: "[name]" } }],
       },
       {
         test: /\.js$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+            options: { transpileOnly: true },
+          },
+        ],
+      },
+    ],
   },
-  output: {
-    filename: './[name].js',
-    path: __dirname + '/dist'
+  plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      tslint: true,
+      watch: ["./src", "./test"], // optional but improves performance (less stat calls)
+    }),
+    new HtmlWebpackPlugin({
+      template: "src/index.html", // Load a custom template (lodash by default see the FAQ for details)
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "vendor",
+      // filename: "vendor.js"
+      // (Give the chunk a different name)
+
+      minChunks: Infinity,
+      // (with more entries, this ensures that no other module
+      //  goes into the vendor chunk)
+    }),
+  ],
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx", ".js"],
   },
-  plugins
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
+    port: 9000,
+  },
+  devtool: "source-map",
 };
