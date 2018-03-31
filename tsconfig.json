@@ -61,7 +61,7 @@
     "./node_modules/@types/**/*.d.ts",
     "./node_modules/jsplumb/index.d.ts",
     "./node_modules/react-dag/**/*.d.ts",
-    "./typings/*.d.ts",
-    "./src/**/*.*"
+    "./examples/ts/typings/*.d.ts",
+    "./examples/src/ts/**/*.*"
   ]
 }

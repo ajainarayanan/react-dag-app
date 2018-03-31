@@ -5,7 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/ajainarayanan/react-dag-app",
   "scripts": {
-    "start:dev": "webpack-dev-server"
+    "start:dev": "webpack-dev-server",
+    "start:dev-js": "EXAMPLE_TO_COMPILE=js webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
