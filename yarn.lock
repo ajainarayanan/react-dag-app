@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@ajainarayanan/react-pan-zoom@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@ajainarayanan/react-pan-zoom/-/react-pan-zoom-0.0.1.tgz#2e4c4cf8df186d6d388629a38e39a3818fbc660c"
+
 "@epegzz/sass-vars-loader@^2.0.2":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@epegzz/sass-vars-loader/-/sass-vars-loader-2.2.1.tgz#077b6871baf13d32222d689507a3a6bc178ed687"
@@ -4028,10 +4032,11 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dag@^2.0.0-alpha-1:
-  version "2.0.0-alpha-1"
-  resolved "https://registry.yarnpkg.com/react-dag/-/react-dag-2.0.0-alpha-1.tgz#3ead51e4c4b52fea7b07206a19db7dfbfb177a93"
+react-dag@^2.0.0-alpha-2-1:
+  version "2.0.0-alpha-2-1"
+  resolved "https://registry.yarnpkg.com/react-dag/-/react-dag-2.0.0-alpha-2-1.tgz#276c9b294f1f1bfe0de9b62c367e97afd3da59bb"
   dependencies:
+    "@ajainarayanan/react-pan-zoom" "^0.0.1"
     jsplumb "2.5.12"
     prop-types "^15.6.0"
     react "^16.1.1"
